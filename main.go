@@ -12,7 +12,6 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/joho/godotenv"
-	"github.com/samiam2013/basicauth"
 )
 
 func main() {
@@ -32,10 +31,10 @@ func main() {
 		}
 		mapCreds[strings[0]] = strings[1]
 	}
-	basicAuth, err := basicauth.Builder(mapCreds, basicauth.WithUnsafeHTTP())
-	if err != nil {
-		log.Fatalf("Failed to build basicauth middleware: %v", err)
-	}
+	// basicAuth, err := basicauth.Builder(mapCreds, basicauth.WithUnsafeHTTP())
+	// if err != nil {
+	// 	log.Fatalf("Failed to build basicauth middleware: %v", err)
+	// }
 
 	connectStr := "postgresql://grafana:grafana@localhost/grafana?sslmode=disable"
 	db, err := sql.Open("postgres", connectStr)
@@ -45,7 +44,7 @@ func main() {
 
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /reportatmosphere", basicAuth(reportAtmosphereHandler(db)))
+	mux.HandleFunc("GET /reportatmosphere", reportAtmosphereHandler(db))
 	// TODO add basicAuth to this
 	mux.HandleFunc("GET /fishlighttimes", getFishLightTimes)
 
@@ -75,10 +74,7 @@ func reportAtmosphereHandler(db *sql.DB) http.HandlerFunc {
 			http.Error(w, "Failed to parse humidity as float64", http.StatusBadRequest)
 			return
 		}
-		/*grafana=# select * from sensor_data limit 0;
-		 id | created_at | temperature | pressure | humidity
-		----+------------+-------------+----------+----------
-		(0 rows)*/
+
 		_, err = db.Exec(
 			"INSERT INTO sensor_data (temperature, pressure, humidity) VALUES ($1, $2, $3)",
 			tempF, pressureF, humidityF)
