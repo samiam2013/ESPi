@@ -20,3 +20,7 @@
 # Go workspace file
 go.work
 go.work.sum
+
+# don't commit env config
+.env
+**/.env
