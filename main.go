@@ -85,6 +85,7 @@ func reportAtmosphereHandler(db *sql.DB) http.HandlerFunc {
 		}
 		w.WriteHeader(http.StatusOK)
 		w.Write([]byte("OK; sensor data inserted"))
+		log.Printf("Inserted sensor data: temp=%f, pressure=%f, humidity=%f", tempF, pressureF, humidityF)
 	}
 }
 
