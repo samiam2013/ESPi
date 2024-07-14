@@ -24,3 +24,6 @@ go.work.sum
 # don't commit env config
 .env
 **/.env
+
+# don't save the log files in version control 
+logs/*.log

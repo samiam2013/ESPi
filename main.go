@@ -8,11 +8,16 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	_ "github.com/lib/pq"
 
 	"github.com/joho/godotenv"
 )
+
+func init() {
+	log.Printf("ESPi launched at %s\n", time.Now())
+}
 
 func main() {
 	if err := godotenv.Load(); err != nil {
@@ -48,7 +53,10 @@ func main() {
 	// TODO add basicAuth to this
 	mux.HandleFunc("GET /fishlighttimes", getFishLightTimes)
 
-	_ = http.ListenAndServe(":8080", mux)
+	go func() { _ = http.ListenAndServe(":8080", mux) }()
+	log.Printf("ESPi server started at %s\n", time.Now())
+
+	select {} // evil concurrency hack to keep the goroutine open
 }
 
 func reportAtmosphereHandler(db *sql.DB) http.HandlerFunc {

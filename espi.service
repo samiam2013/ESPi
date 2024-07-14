@@ -1,0 +1,19 @@
+[Unit]
+Description=ESPi - auxillary code for home ESP usecases
+ConditionPathExists=/home/sam/git/samiam2013/ESPi
+After=network.target
+
+[Service]
+Type=simple
+User=sam
+Group=sam
+WorkingDirectory=/home/sam/git/samiam2013/ESPi
+ExecStart=/usr/local/go/bin/go run .
+StandardOutput=append:/home/sam/git/samiam2013/ESPi/logs/output.log
+StandardError=append:/home/sam/git/samiam2013/ESPi/logs/error.log
+Restart=on-failure
+RestartSec=10
+SyslogIdentifier=espi
+
+[Install]
+WantedBy=multi-user.target
